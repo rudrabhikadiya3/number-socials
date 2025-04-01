@@ -13,6 +13,7 @@ import { useMutation } from '@tanstack/react-query'
 import { authService } from '@/services/authService'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import Cookies from 'js-cookie'
 
 const signupSchema = z
   .object({
@@ -48,8 +49,14 @@ export default function SignupForm() {
     mutationFn: (data: { username: string; password: string }) => authService.signup(data),
     onSuccess: (response) => {
       if (response.status) {
+        if (response.data?.token) {
+          Cookies.set('user', response.data.token, {
+            expires: 7,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+          })
+        }
         toast.success(response.msg || 'Account created successfully')
-
         router.push('/')
       } else {
         setError('root', {
@@ -66,7 +73,6 @@ export default function SignupForm() {
         type: 'manual',
         message: errorMessage,
       })
-
       toast.error(errorMessage)
     },
   })

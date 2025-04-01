@@ -4,10 +4,8 @@ import dbConnect from '@/lib/mongoose'
 import User from '@/models/User'
 
 const JWT_SECRET = process.env.JWT_SECRET as string
-
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect()
     const body = await req.json()
     const { username, password } = body
 
@@ -15,6 +13,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ status: false, msg: 'Username and password are required' }, { status: 400 })
     }
 
+    await dbConnect()
     const existingUser = await User.findOne({ username })
     if (existingUser) {
       return NextResponse.json({ status: false, msg: 'Username already exists' }, { status: 409 })
@@ -25,26 +24,7 @@ export async function POST(req: NextRequest) {
 
     const token = jwt.sign({ userId: user._id.toString(), username: user.username }, JWT_SECRET, { expiresIn: '7d' })
 
-    const response = NextResponse.json(
-      {
-        status: true,
-        data: { user: { id: user._id, username: user.username, createdAt: user.createdAt } },
-        msg: 'Account created successfully',
-      },
-      { status: 201 }
-    )
-
-    response.cookies.set({
-      name: 'auth_token',
-      value: token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-    })
-
-    return response
+    return NextResponse.json({ status: true, data: { token: token }, msg: 'Account created successfully' }, { status: 201 })
   } catch (error: any) {
     console.error('Signup error:', error)
     return NextResponse.json({ status: false, msg: 'Failed to create account' }, { status: 500 })

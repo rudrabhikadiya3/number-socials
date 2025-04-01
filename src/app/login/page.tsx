@@ -9,6 +9,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
+import { authService } from '@/services/authService'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import Cookies from 'js-cookie'
 
 const loginSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters'),
@@ -18,30 +23,49 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>
 
 export default function LoginForm() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   })
 
-  const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const onSubmit = async (data: LoginFormValues) => {
-    setLoading(true)
-    try {
-      console.log('Login successful', data)
-    } catch (error) {
-      console.error('Login failed', error)
-    } finally {
-      setLoading(false)
-    }
+
+  const loginMutation = useMutation({
+    mutationFn: (data: LoginFormValues) => authService.login(data),
+    onSuccess: (response) => {
+      if (response.status) {
+        if (response.data?.token) {
+          Cookies.set('user', response.data.token, {
+            expires: 7,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+          })
+        }
+        toast.success(response.msg || 'Login successful')
+        router.push('/')
+      } else {
+        setError('root', { type: 'manual', message: response.msg || 'Login failed' })
+        toast.error(response.msg || 'Login failed')
+      }
+    },
+    onError: (error: any) => {
+      const errorMessage = error.response?.data?.msg || 'An error occurred during login'
+      setError('root', { type: 'manual', message: errorMessage })
+      toast.error(errorMessage)
+    },
+  })
+
+  const onSubmit = (data: LoginFormValues) => {
+    loginMutation.mutate(data)
   }
-
   const togglePasswordVisibility = () => setShowPassword(!showPassword)
-
   const EyeIcon = showPassword ? EyeOff : Eye
+
   return (
     <div className='flex justify-center items-center min-h-screen bg-gray-100'>
       <Card className='w-96 shadow-lg'>
@@ -61,8 +85,9 @@ export default function LoginForm() {
               </button>
               {errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
             </div>
-            <Button type='submit' className='w-full' disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
+            {errors.root && <p className='text-red-500 text-sm'>{errors.root.message}</p>}
+            <Button type='submit' className='w-full' disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? 'Logging in...' : 'Login'}
             </Button>
           </form>
           <p className='text-center text-sm mt-4'>
