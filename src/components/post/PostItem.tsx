@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Post } from '@/types'
 import ReplyModal from './ReplyModel'
 import { MessageCircle } from 'lucide-react'
+import { useAuth } from '@/hooks/useAuth'
+import LoginAlertModal from '../global/LoginDialogue'
 
 interface PostItemProps {
   post: Post
@@ -14,10 +16,18 @@ interface PostItemProps {
 
 export default function PostItem({ post, level }: PostItemProps) {
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false)
+  const [showLoginAlert, setShowLoginAlert] = useState(false)
 
-  // Determine if this is a main post or a comment
+  const { user } = useAuth()
   const isMainPost = level === 0
 
+  const handleOpenReplyModal = () => {
+    if (user) {
+      setIsReplyModalOpen(true)
+    } else {
+      setShowLoginAlert(true)
+    }
+  }
   return (
     <div className={`mb-2.5 ${level > 0 ? 'ml-4 pt-0.5' : ''}`}>
       <div className={`p-2 rounded-md ${isMainPost ? 'bg-white shadow-sm' : 'bg-gray-50 border border-gray-200'}`}>
@@ -35,12 +45,17 @@ export default function PostItem({ post, level }: PostItemProps) {
         <div className={`${isMainPost ? 'text-base font-medium' : 'text-sm'} my-0.5`}>{post.number}</div>
 
         <div>
-          <Button variant='ghost' size='sm' className='text-xs px-1.5 py-0 h-5' onClick={() => setIsReplyModalOpen(true)}>
+          <Button variant='ghost' size='sm' className='text-xs px-1.5 py-0 h-5' onClick={handleOpenReplyModal}>
             <MessageCircle />
           </Button>
         </div>
 
         <ReplyModal isOpen={isReplyModalOpen} onOpenChange={setIsReplyModalOpen} post={post} />
+        <LoginAlertModal
+          isOpen={showLoginAlert}
+          onOpenChange={setShowLoginAlert}
+          description={`You're not logged in! Log in to create and post your comments`}
+        />
       </div>
 
       {post.comments.length > 0 && (

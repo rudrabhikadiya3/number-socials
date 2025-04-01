@@ -3,13 +3,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { useState } from 'react'
+import LoginAlertModal from '../global/LoginDialogue'
 
 const CreatePost = () => {
   const [value, setValue] = useState('')
+  const [showLoginAlert, setShowLoginAlert] = useState(false)
   const { user } = useAuth()
   console.log(`🔵 user=>`, user)
 
   const handleSubmit = () => {
+    if (!user) {
+      setShowLoginAlert(true)
+      return
+    }
     if (value) {
       console.log('Post created with value:', value)
       setValue('')
@@ -47,6 +53,11 @@ const CreatePost = () => {
           Post
         </Button>
       </div>
+      <LoginAlertModal
+        isOpen={showLoginAlert}
+        onOpenChange={setShowLoginAlert}
+        description={`You're not logged in! Log in to create and share your posts`}
+      />
     </div>
   )
 }
