@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import AppHeader from '@/components/custom/AppHeader'
 import { Post } from '@/types'
-import CreatePost from '@/components/custom/CreatePost'
+import CreatePost from '@/components/post/CreatePost'
 import PostList from '@/components/post/PostList'
 
 export default function NumberPostPage() {
@@ -12,19 +11,19 @@ export default function NumberPostPage() {
       id: 1,
       number: 10,
       username: 'alice',
-      timestamp: '2h ago',
+      timestamp: '2h',
       comments: [
         {
           id: 2,
           number: 15,
           username: 'bob',
-          timestamp: '1h ago',
+          timestamp: '1h',
           comments: [
             {
               id: 4,
               number: 30,
               username: 'dave',
-              timestamp: '30m ago',
+              timestamp: '30m',
               comments: [],
             },
           ],
@@ -33,7 +32,7 @@ export default function NumberPostPage() {
           id: 3,
           number: 5,
           username: 'charlie',
-          timestamp: '45m ago',
+          timestamp: '45m',
           comments: [],
         },
       ],
@@ -42,19 +41,18 @@ export default function NumberPostPage() {
       id: 5,
       number: 42,
       username: 'eve',
-      timestamp: '3h ago',
+      timestamp: '3h',
       comments: [],
     },
   ])
 
   return (
     <>
-      <AppHeader />
-      <div className='max-w-xl mx-auto mt-4'>
+      {/* <AppHeader /> */}
+      <div className='max-w-2xl mx-auto mt-16'>
         <CreatePost />
+        <PostList posts={posts} />
       </div>
-
-      <PostList posts={posts} />
     </>
   )
 }

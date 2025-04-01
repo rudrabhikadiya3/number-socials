@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Post } from '@/types'
+import { useState } from 'react'
+import { Send } from 'lucide-react'
 
 interface ReplyModalProps {
   isOpen: boolean
@@ -12,6 +14,9 @@ interface ReplyModalProps {
 }
 
 export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalProps) {
+  const [operator, setOperator] = useState('+')
+  const [number, setNumber] = useState('')
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className='sm:max-w-md'>
@@ -31,19 +36,25 @@ export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalPro
         </div>
 
         <div className='space-y-2'>
-          <div className='text-sm font-medium'>Enter your calculation:</div>
-          <div className='flex gap-2 items-center'>
-            <span className='text-lg'>{post.number}</span>
-            <select className='rounded border p-1'>
-              <option value='add'>+</option>
-              <option value='subtract'>-</option>
-              <option value='multiply'>×</option>
-              <option value='divide'>÷</option>
+          <div className='flex items-center'>
+            <select className='border h-12 px-2 rounded rounded-e-none' value={operator} onChange={(e) => setOperator(e.target.value)}>
+              <option value='+'>+</option>
+              <option value='-'>-</option>
+              <option value='*'>*</option>
+              <option value='/'>/</option>
             </select>
-            <input type='number' className='border rounded p-1 flex-1' placeholder='Enter a number' />
-          </div>
-          <div className='flex justify-end mt-4'>
-            <Button onClick={() => onOpenChange(false)}>Submit</Button>
+
+            <input
+              type='number'
+              className='border h-12 w-full px-2 border-x-0'
+              placeholder='Enter your comments here...'
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+            />
+
+            <Button className='h-12 rounded rounded-s-none' disabled={!number}>
+              <Send />
+            </Button>
           </div>
         </div>
       </DialogContent>
