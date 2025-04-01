@@ -9,6 +9,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
+import { authService } from '@/services/authService'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 const signupSchema = z
   .object({
@@ -24,33 +28,54 @@ const signupSchema = z
 type SignupFormValues = z.infer<typeof signupSchema>
 
 export default function SignupForm() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
   })
 
-  const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword)
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword)
 
+  const signupMutation = useMutation({
+    mutationFn: (data: { username: string; password: string }) => authService.signup(data),
+    onSuccess: (response) => {
+      if (response.status) {
+        toast.success(response.msg || 'Account created successfully')
+
+        router.push('/')
+      } else {
+        setError('root', {
+          type: 'manual',
+          message: response.msg || 'Signup failed',
+        })
+
+        toast.error(response.msg || 'Signup failed')
+      }
+    },
+    onError: (error: any) => {
+      const errorMessage = error.response?.data?.msg || 'An error occurred during signup'
+      setError('root', {
+        type: 'manual',
+        message: errorMessage,
+      })
+
+      toast.error(errorMessage)
+    },
+  })
+
   const onSubmit = async (data: SignupFormValues) => {
-    setLoading(true)
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      console.log('Signup successful', data)
-    } catch (error) {
-      console.error('Signup failed', error)
-    } finally {
-      setLoading(false)
-    }
+    const { confirmPassword, ...signupData } = data
+    signupMutation.mutate(signupData)
   }
+
   const PasswordEyeIcon = showPassword ? EyeOff : Eye
   const ConfirmPasswordEyeIcon = showConfirmPassword ? EyeOff : Eye
 
@@ -80,8 +105,9 @@ export default function SignupForm() {
               </button>
               {errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
             </div>
-            <Button type='submit' className='w-full' disabled={loading}>
-              {loading ? 'Signing up...' : 'Sign Up'}
+            {errors.root && <p className='text-red-500 text-sm'>{errors.root.message}</p>}
+            <Button type='submit' className='w-full' disabled={signupMutation.isPending}>
+              {signupMutation.isPending ? 'Signing up...' : 'Sign Up'}
             </Button>
           </form>
           <p className='text-center text-sm mt-4'>
