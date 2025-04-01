@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Post } from '@/types'
 import CreatePost from '@/components/post/CreatePost'
 import PostList from '@/components/post/PostList'
+import AppHeader from '@/components/app/AppHeader'
 
 export default function NumberPostPage() {
   const [posts, setPosts] = useState<Post[]>([
@@ -48,7 +49,7 @@ export default function NumberPostPage() {
 
   return (
     <>
-      {/* <AppHeader /> */}
+      <AppHeader />
       <div className='max-w-2xl mx-auto mt-16'>
         <CreatePost />
         <PostList posts={posts} />
