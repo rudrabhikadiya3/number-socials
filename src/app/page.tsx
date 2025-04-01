@@ -1,51 +1,22 @@
 'use client'
 
-import { useState } from 'react'
-import { Post } from '@/types'
 import CreatePost from '@/components/post/CreatePost'
 import PostList from '@/components/post/PostList'
 import AppHeader from '@/components/app/AppHeader'
+import { useQuery } from '@tanstack/react-query'
+import { postService } from '@/services/postService'
 
 export default function NumberPostPage() {
-  const [posts, setPosts] = useState<Post[]>([
-    {
-      id: 1,
-      number: 10,
-      username: 'alice',
-      timestamp: '2h',
-      comments: [
-        {
-          id: 2,
-          number: 15,
-          username: 'bob',
-          timestamp: '1h',
-          comments: [
-            {
-              id: 4,
-              number: 30,
-              username: 'dave',
-              timestamp: '30m',
-              comments: [],
-            },
-          ],
-        },
-        {
-          id: 3,
-          number: 5,
-          username: 'charlie',
-          timestamp: '45m',
-          comments: [],
-        },
-      ],
+  const { data: postsData } = useQuery({
+    queryKey: ['posts'],
+    queryFn: async () => {
+      const response = await postService.getPost()
+      return response.data || []
     },
-    {
-      id: 5,
-      number: 42,
-      username: 'eve',
-      timestamp: '3h',
-      comments: [],
-    },
-  ])
+    refetchInterval: 30000,
+  })
+
+  const posts = postsData || []
 
   return (
     <>

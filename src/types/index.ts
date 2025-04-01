@@ -4,4 +4,5 @@ export interface Post {
   comments: Post[]
   username: string
   timestamp: string
+  postId: string
 }

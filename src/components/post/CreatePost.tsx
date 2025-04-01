@@ -54,17 +54,19 @@ const CreatePost = () => {
 
         <h2 className='text-lg font-semibold'>Create a post</h2>
       </div>
-      <Input
-        placeholder='Which number is in your mind?'
-        className='p-0 ps-1 border-0 focus-visible:border-0 focus-visible:ring-0 shadow-none'
-        onChange={handleChange}
-        value={value}
-      />
-      <div className='text-start'>
-        <Button onClick={handleSubmit} className='text-end' size='sm' disabled={!value}>
-          Post
-        </Button>
-      </div>
+      <form>
+        <Input
+          placeholder='Which number is in your mind?'
+          className='p-0 ps-1 border-0 focus-visible:border-0 focus-visible:ring-0 shadow-none'
+          onChange={handleChange}
+          value={value}
+        />
+        <div className='text-start'>
+          <Button onClick={handleSubmit} className='text-end' size='sm' disabled={!value} type='submit'>
+            Post
+          </Button>
+        </div>
+      </form>
       <LoginAlertModal
         isOpen={showLoginAlert}
         onOpenChange={setShowLoginAlert}

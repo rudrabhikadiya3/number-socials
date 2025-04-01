@@ -10,8 +10,8 @@ interface PostListProps {
 export default function PostList({ posts }: PostListProps) {
   return (
     <>
-      {posts.map((post) => (
-        <PostItem key={post.id} post={post} level={0} />
+      {posts.map((post, i) => (
+        <PostItem key={i} post={post} level={0} />
       ))}
     </>
   )

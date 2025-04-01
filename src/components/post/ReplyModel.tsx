@@ -5,7 +5,10 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Post } from '@/types'
 import { useState } from 'react'
-import { Send } from 'lucide-react'
+import { Loader2, Send } from 'lucide-react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { postService } from '@/services/postService'
 
 interface ReplyModalProps {
   isOpen: boolean
@@ -16,6 +19,67 @@ interface ReplyModalProps {
 export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalProps) {
   const [operator, setOperator] = useState('+')
   const [number, setNumber] = useState('')
+  const queryClient = useQueryClient()
+
+  const calculateResult = (baseNumber: number, operand: number, operator: string) => {
+    switch (operator) {
+      case '+':
+        return baseNumber + operand
+      case '-':
+        return baseNumber - operand
+      case '*':
+        return baseNumber * operand
+      case '/':
+        if (operand === 0) throw new Error('Cannot divide by zero')
+        return baseNumber / operand
+      default:
+        return baseNumber
+    }
+  }
+
+  const createCommentMutation = useMutation({
+    mutationFn: (data: { postId: string; parentId: string; number: number }) => {
+      return postService.createComment(data)
+    },
+    onSuccess: () => {
+      onOpenChange(false)
+      setNumber('')
+      setOperator('+')
+      queryClient.invalidateQueries({ queryKey: ['posts'] })
+      toast.success('Your comment has been posted.')
+    },
+    onError: (error) => {
+      console.error('Error creating comment:', error)
+      toast.error('Failed to post comment. Please try again.')
+    },
+  })
+
+  const handleSubmit = () => {
+    if (!number || isNaN(Number(number))) {
+      toast.error('Invalid input')
+      return
+    }
+
+    try {
+      const numericOperand = Number(number)
+
+      if (operator === '/' && numericOperand === 0) {
+        toast.error('Cannot divide by zero')
+        return
+      }
+
+      const result = calculateResult(post.number, numericOperand, operator)
+
+      createCommentMutation.mutate({
+        postId: String(post.id),
+        parentId: String(post.postId || post.id),
+        number: result,
+      })
+    } catch (error: any) {
+      console.error(error)
+      toast('Calculation error')
+    }
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -36,8 +100,13 @@ export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalPro
         </div>
 
         <div className='space-y-2'>
-          <div className='flex items-center'>
-            <select className='border h-12 px-2 rounded rounded-e-none' value={operator} onChange={(e) => setOperator(e.target.value)}>
+          <form className='flex items-center'>
+            <select
+              className='border h-12 px-2 rounded rounded-e-none'
+              value={operator}
+              onChange={(e) => setOperator(e.target.value)}
+              disabled={createCommentMutation.isPending}
+            >
               <option value='+'>+</option>
               <option value='-'>-</option>
               <option value='*'>*</option>
@@ -47,15 +116,29 @@ export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalPro
             <input
               type='number'
               className='border h-12 w-full px-2 border-x-0'
-              placeholder='Enter your comments here...'
+              placeholder='Enter a number...'
               value={number}
               onChange={(e) => setNumber(e.target.value)}
+              disabled={createCommentMutation.isPending}
+              autoFocus
             />
 
-            <Button className='h-12 rounded rounded-s-none' disabled={!number}>
-              <Send />
+            <Button
+              className='h-12 rounded rounded-s-none'
+              disabled={!number || createCommentMutation.isPending}
+              onClick={handleSubmit}
+              type='submit'
+            >
+              {createCommentMutation.isPending ? <Loader2 className='h-4 w-4 animate-spin' /> : <Send />}
             </Button>
-          </div>
+          </form>
+
+          {number && !isNaN(Number(number)) && (
+            <div className='text-sm text-gray-500 pt-2'>
+              Preview: {post.number} {operator} {number} ={' '}
+              {operator === '/' && Number(number) === 0 ? 'Error: Cannot divide by zero' : calculateResult(post.number, Number(number), operator)}
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
