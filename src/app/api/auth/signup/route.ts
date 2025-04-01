@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 import dbConnect from '@/lib/mongoose'
 import User from '@/models/User'
+import { now } from '@/utils/server'
 
 const JWT_SECRET = process.env.JWT_SECRET as string
 export async function POST(req: NextRequest) {
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ status: false, msg: 'Username already exists' }, { status: 409 })
     }
 
-    const user = new User({ username, password })
+    const user = new User({ username, password, createdAt: now() })
     await user.save()
 
     const token = jwt.sign({ userId: user._id.toString(), username: user.username }, JWT_SECRET, { expiresIn: '7d' })
