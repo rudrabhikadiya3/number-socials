@@ -4,12 +4,24 @@ import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { useState } from 'react'
 import LoginAlertModal from '../global/LoginDialogue'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { postService } from '@/services/postService'
 
 const CreatePost = () => {
   const [value, setValue] = useState('')
   const [showLoginAlert, setShowLoginAlert] = useState(false)
   const { user } = useAuth()
-  console.log(`🔵 user=>`, user)
+
+  const queryClient = useQueryClient()
+
+  const createPostMutation = useMutation({
+    mutationFn: (number: number) => {
+      return postService.createPost({ number })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] })
+    },
+  })
 
   const handleSubmit = () => {
     if (!user) {
@@ -17,7 +29,7 @@ const CreatePost = () => {
       return
     }
     if (value) {
-      console.log('Post created with value:', value)
+      createPostMutation.mutate(Number(value))
       setValue('')
     } else {
       console.error('Input cannot be empty')

@@ -10,7 +10,7 @@ export interface IPost extends Document {
 const PostSchema: Schema = new Schema({
   number: { type: Number, required: [true, 'Starting number is required'] },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: [true, 'User ID is required'] },
-  createdAt: { type: Date },
+  createdAt: { type: Number },
 })
 
 const Post = mongoose.models.Post || mongoose.model<IPost>('Post', PostSchema)
