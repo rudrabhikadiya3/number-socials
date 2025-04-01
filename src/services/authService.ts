@@ -23,4 +23,9 @@ export const authService = {
     const response = await axios.post('/api/auth/signup', data)
     return response.data
   },
+
+  login: async (data: SignupData): Promise<AuthResponse> => {
+    const response = await axios.post('/api/auth/login', data)
+    return response.data
+  },
 }
