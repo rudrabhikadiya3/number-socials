@@ -23,7 +23,8 @@ const CreatePost = () => {
     },
   })
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
     if (!user) {
       setShowLoginAlert(true)
       return
