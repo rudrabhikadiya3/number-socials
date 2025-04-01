@@ -9,14 +9,14 @@ export default function AppHeader() {
 
   return (
     <header className='w-full bg-gray-100 p-2 flex justify-between items-center'>
-      <div className='font-bold text-xl'>Number App</div>
+      <div className='font-bold text-xl'>Number Social</div>
 
       <div className='flex items-center gap-3'>
         {isAuthenticated && user ? (
           <>
             <div className='flex items-center gap-2'>
               <Avatar className='border'>
-                <AvatarImage src='/path-to-profile.jpg' alt='User Profile' />
+                <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.username}`} alt='User Profile' />
                 <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <p className='font-medium text-gray-900'>{user.username}</p>

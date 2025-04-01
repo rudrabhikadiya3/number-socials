@@ -1,3 +1,4 @@
+import { useAuth } from '@/hooks/useAuth'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -5,6 +6,8 @@ import { useState } from 'react'
 
 const CreatePost = () => {
   const [value, setValue] = useState('')
+  const { user } = useAuth()
+  console.log(`🔵 user=>`, user)
 
   const handleSubmit = () => {
     if (value) {
@@ -24,10 +27,13 @@ const CreatePost = () => {
   return (
     <div className='w-full p-4 border border-b rounded space-y-2 mb-3'>
       <div className='flex items-center'>
-        <Avatar className='h-8 w-8 mr-1.5'>
-          <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=rudra`} />
-          <AvatarFallback>RU</AvatarFallback>
-        </Avatar>
+        {user && (
+          <Avatar className='h-8 w-8 mr-1.5'>
+            <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.username}`} />
+            <AvatarFallback>{user.username.substring(0, 2)}</AvatarFallback>
+          </Avatar>
+        )}
+
         <h2 className='text-lg font-semibold'>Create a post</h2>
       </div>
       <Input
