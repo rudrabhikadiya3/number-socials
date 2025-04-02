@@ -85,7 +85,7 @@ export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalPro
         </DialogHeader>
         <div className='flex items-start space-x-2 mb-4'>
           <Avatar className='h-8 w-8'>
-            <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${post.username}`} />
+            <AvatarImage src={`https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=seed=${post.username}`} />
             <AvatarFallback>{post.username.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div>

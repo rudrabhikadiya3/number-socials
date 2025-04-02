@@ -43,11 +43,11 @@ const CreatePost = () => {
       <div className='flex items-center mb-4'>
         {user && (
           <Avatar className='h-8 w-8 mr-1.5'>
-            <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.username}`} />
+            <AvatarImage src={`https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=${user.username}`} />
             <AvatarFallback>{user.username.substring(0, 2)}</AvatarFallback>
           </Avatar>
         )}
-        <h2 className='text-lg font-semibold'>Create a post</h2>
+        <h2 className='text-lg'>Create a post</h2>
       </div>
 
       <form className='space-y-3'>
