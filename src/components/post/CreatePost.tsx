@@ -39,27 +39,27 @@ const CreatePost = () => {
     }
   }
   return (
-    <div className='w-full p-4 border border-b rounded space-y-2 mb-3'>
-      <div className='flex items-center'>
+    <div className='w-full p-4 border border-b rounded-md mb-4'>
+      <div className='flex items-center mb-4'>
         {user && (
           <Avatar className='h-8 w-8 mr-1.5'>
             <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.username}`} />
             <AvatarFallback>{user.username.substring(0, 2)}</AvatarFallback>
           </Avatar>
         )}
-
         <h2 className='text-lg font-semibold'>Create a post</h2>
       </div>
-      <form>
+
+      <form className='space-y-3'>
         <Input
           placeholder='Which number is in your mind?'
-          className='p-0 ps-1 border-0 focus-visible:border-0 focus-visible:ring-0 shadow-none'
+          className='p-0 ps-1 border-0 focus-visible:border-0 focus-visible:ring-0 shadow-none md:text-xl'
           onChange={handleChange}
           value={value}
         />
         <div className='text-start'>
           <Button onClick={handleSubmit} className='text-end' size='sm' disabled={!value} type='submit'>
-            Post
+            {createPostMutation.isPending ? 'Posting...' : 'Post'}
           </Button>
         </div>
       </form>
