@@ -95,22 +95,22 @@ export default function SignupForm() {
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
             <div>
               <Input placeholder='Username' {...register('username')} />
-              {errors.username && <p className='text-red-500 text-sm'>{errors.username.message}</p>}
             </div>
+            {errors.username && <p className='text-red-500 text-sm'>{errors.username.message}</p>}
             <div className='relative'>
               <Input type={showPassword ? 'text' : 'password'} placeholder='Password' {...register('password')} />
               <button type='button' className='absolute inset-y-0 right-2 flex items-center' onClick={togglePasswordVisibility}>
                 <PasswordEyeIcon className='w-5 h-5 opacity-50' />
               </button>
-              {errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
             </div>
+            {errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
             <div className='relative'>
               <Input type={showConfirmPassword ? 'text' : 'password'} placeholder='Confirm Password' {...register('confirmPassword')} />
               <button type='button' className='absolute inset-y-0 right-2 flex items-center' onClick={toggleConfirmPasswordVisibility}>
                 <ConfirmPasswordEyeIcon className='w-5 h-5 opacity-50' />
               </button>
-              {errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
             </div>
+            {errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
             {errors.root && <p className='text-red-500 text-sm'>{errors.root.message}</p>}
             <Button type='submit' className='w-full' disabled={signupMutation.isPending}>
               {signupMutation.isPending ? 'Signing up...' : 'Sign Up'}
