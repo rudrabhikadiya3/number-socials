@@ -66,7 +66,7 @@ const CreatePost = () => {
       <LoginAlertModal
         isOpen={showLoginAlert}
         onOpenChange={setShowLoginAlert}
-        description={`You're not logged in! Log in to create and share your posts`}
+        description={`You're not logged in! Login to create and share your posts`}
       />
     </div>
   )

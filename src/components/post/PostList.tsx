@@ -40,7 +40,7 @@ export default function PostList({ posts }: PostListProps) {
       <LoginAlertModal
         isOpen={showLoginAlert}
         onOpenChange={setShowLoginAlert}
-        description={`You're not logged in! Log in to create and post your comments`}
+        description={`You're not logged in! Login to create and post your comments`}
       />
     </>
   )
