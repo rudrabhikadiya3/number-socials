@@ -24,7 +24,7 @@ interface CreateCommentData {
 async function createPostAPI(data: CreatePostData): Promise<PostResponse> {
   const cookieStore = await cookies()
   const token = cookieStore.get('user')?.value
-  const response = await axiosInstance.post('http://localhost:3001/api/post', data, {
+  const response = await axiosInstance.post('/api/post', data, {
     headers: { Authorization: `Bearer ${token}` },
   })
 
@@ -35,7 +35,7 @@ async function createPostAPI(data: CreatePostData): Promise<PostResponse> {
 async function createCommentAPI(data: CreateCommentData): Promise<PostResponse> {
   const cookieStore = await cookies()
   const token = cookieStore.get('user')?.value
-  const response = await axiosInstance.post('http://localhost:3001/api/post/comment', data, {
+  const response = await axiosInstance.post('/api/post/comment', data, {
     headers: { Authorization: `Bearer ${token}` },
   })
 
