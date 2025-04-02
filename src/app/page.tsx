@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function NumberPostPage() {
   const token = Cookies.get('user')
-  const posts = await axiosInstance.get('/api/post', {
+  const posts = await axiosInstance.get('/post', {
     headers: { Authorization: `Bearer ${token}` },
   })
 
