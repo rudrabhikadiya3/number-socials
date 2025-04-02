@@ -16,7 +16,7 @@ export default function AppHeader() {
           <>
             <div className='flex items-center gap-2'>
               <Avatar className='border'>
-                <AvatarImage src={`https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=seed=${user.username}`} alt='User Profile' />
+                <AvatarImage src={`https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=${user.username}`} alt='User Profile' />
                 <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <p className='font-medium text-gray-900'>{user.username}</p>

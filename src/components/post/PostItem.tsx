@@ -24,7 +24,7 @@ export default function PostItem({ post, level, showLoginAlert, setShowLoginAler
       <div className={`p-2 rounded-md ${isMainPost ? 'bg-white shadow-sm' : 'bg-gray-50 border border-gray-200'}`}>
         <div className='flex items-center'>
           <Avatar className={`${isMainPost ? 'h-6 w-6' : 'h-4 w-4'} mr-1.5`}>
-            <AvatarImage src={`https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=seed=${post.username}`} />
+            <AvatarImage src={`https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=${post.username}`} />
             <AvatarFallback>{post.username.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className='flex items-baseline'>
