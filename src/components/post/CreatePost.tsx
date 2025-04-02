@@ -47,7 +47,7 @@ const CreatePost = () => {
             <AvatarFallback>{user.username.substring(0, 2)}</AvatarFallback>
           </Avatar>
         )}
-        <h2 className='text-lg'>Create a post</h2>
+        <h2 className='text-lg'>Write your post</h2>
       </div>
 
       <form className='space-y-3'>
