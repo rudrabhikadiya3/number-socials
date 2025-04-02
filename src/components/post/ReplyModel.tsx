@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Post } from '@/types'
-import { useState } from 'react'
+import { MouseEvent, useState } from 'react'
 import { Loader2, Send } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -54,22 +54,22 @@ export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalPro
     },
   })
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: MouseEvent) => {
+    e.preventDefault()
     if (!number || isNaN(Number(number))) {
       toast.error('Invalid input')
       return
     }
+    const numericOperand = Number(number)
+
+    if (operator === '/' && numericOperand === 0) {
+      toast.error('Cannot divide by zero')
+      return
+    }
+    console.log('runinhhhhh')
 
     try {
-      const numericOperand = Number(number)
-
-      if (operator === '/' && numericOperand === 0) {
-        toast.error('Cannot divide by zero')
-        return
-      }
-
       const result = calculateResult(post.number, numericOperand, operator)
-
       createCommentMutation.mutate({
         postId: String(post.id),
         parentId: String(post.postId || post.id),

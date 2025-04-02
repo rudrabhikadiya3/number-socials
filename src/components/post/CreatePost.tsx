@@ -2,7 +2,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-import { useState } from 'react'
+import { MouseEvent, useState } from 'react'
 import LoginAlertModal from '../global/LoginDialogue'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { postService } from '@/services/postService'
@@ -23,7 +23,7 @@ const CreatePost = () => {
     },
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: MouseEvent) => {
     e.preventDefault()
     if (!user) {
       setShowLoginAlert(true)
