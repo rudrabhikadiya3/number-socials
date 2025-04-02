@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import { Post as BasePost } from '@/types'
 
 interface CreatePostData {
   number: number
@@ -7,12 +8,7 @@ interface CreatePostData {
 
 interface PostResponse {
   status: boolean
-  data?: {
-    id: string
-    number: number
-    userId: string
-    createdAt: number
-  }
+  data?: BasePost[]
   msg?: string
 }
 
