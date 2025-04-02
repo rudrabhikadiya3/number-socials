@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { axiosInstance } from './axios'
 
 interface SignupData {
   username: string
@@ -20,12 +21,12 @@ interface AuthResponse {
 
 export const authService = {
   signup: async (data: SignupData): Promise<AuthResponse> => {
-    const response = await axios.post('/api/auth/signup', data)
+    const response = await axiosInstance.post('/api/auth/signup', data)
     return response.data
   },
 
   login: async (data: SignupData): Promise<AuthResponse> => {
-    const response = await axios.post('/api/auth/login', data)
+    const response = await axiosInstance.post('/api/auth/login', data)
     return response.data
   },
 }

@@ -1,26 +1,21 @@
+'use client'
+
 import { useAuth } from '@/hooks/useAuth'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { MouseEvent, useState } from 'react'
 import LoginAlertModal from '../global/LoginDialogue'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { postService } from '@/services/postService'
+import { useMutation } from '@tanstack/react-query'
+import { createPostAPI } from '@/lib/actions'
 
 const CreatePost = () => {
   const [value, setValue] = useState('')
   const [showLoginAlert, setShowLoginAlert] = useState(false)
   const { user } = useAuth()
 
-  const queryClient = useQueryClient()
-
   const createPostMutation = useMutation({
-    mutationFn: (number: number) => {
-      return postService.createPost({ number })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] })
-    },
+    mutationFn: (number: number) => createPostAPI({ number }),
   })
 
   const handleSubmit = (e: MouseEvent) => {

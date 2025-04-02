@@ -1,19 +1,15 @@
-'use client'
-
+import Cookies from 'js-cookie'
 import CreatePost from '@/components/post/CreatePost'
 import PostList from '@/components/post/PostList'
 import AppHeader from '@/components/app/AppHeader'
-import { useQuery } from '@tanstack/react-query'
-import { postService } from '@/services/postService'
+import { axiosInstance } from '@/services/axios'
 
-export default function NumberPostPage() {
-  const { data: posts } = useQuery({
-    queryKey: ['posts'],
-    queryFn: async () => {
-      const response = await postService.getPost()
-      return response.data
-    },
-    refetchInterval: 30000,
+export const dynamic = 'force-dynamic'
+
+export default async function NumberPostPage() {
+  const token = Cookies.get('user')
+  const posts = await axiosInstance.get('http://localhost:3001/api/post', {
+    headers: { Authorization: `Bearer ${token}` },
   })
 
   return (
@@ -21,7 +17,7 @@ export default function NumberPostPage() {
       <AppHeader />
       <div className='max-w-2xl mx-auto mt-16'>
         <CreatePost />
-        <PostList posts={posts ?? []} />
+        <PostList posts={posts.data.data ?? []} />
       </div>
     </>
   )

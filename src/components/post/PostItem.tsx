@@ -1,33 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { MessageCircle } from 'lucide-react'
+import { Post } from '@/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Post } from '@/types'
-import ReplyModal from './ReplyModel'
-import { MessageCircle } from 'lucide-react'
-import { useAuth } from '@/hooks/useAuth'
-import LoginAlertModal from '../global/LoginDialogue'
 
 interface PostItemProps {
   post: Post
   level: number
+
+  showLoginAlert: boolean
+  setShowLoginAlert: React.Dispatch<React.SetStateAction<boolean>>
+  openedPost: Post | null
+  handleOpenReplyModal: (value: Post | null) => void
 }
 
-export default function PostItem({ post, level }: PostItemProps) {
-  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false)
-  const [showLoginAlert, setShowLoginAlert] = useState(false)
-
-  const { user } = useAuth()
+export default function PostItem({ post, level, showLoginAlert, setShowLoginAlert, openedPost, handleOpenReplyModal }: PostItemProps) {
   const isMainPost = level === 0
 
-  const handleOpenReplyModal = () => {
-    if (user) {
-      setIsReplyModalOpen(true)
-    } else {
-      setShowLoginAlert(true)
-    }
-  }
   return (
     <div className={`mb-2.5 ${level > 0 ? 'ml-4 pt-0.5' : ''}`}>
       <div className={`p-2 rounded-md ${isMainPost ? 'bg-white shadow-sm' : 'bg-gray-50 border border-gray-200'}`}>
@@ -45,23 +35,24 @@ export default function PostItem({ post, level }: PostItemProps) {
         <div className={`${isMainPost ? 'text-base font-medium' : 'text-sm'} my-0.5`}>{post.number}</div>
 
         <div>
-          <Button variant='ghost' size='sm' className='text-xs px-1.5 py-0 h-5' onClick={handleOpenReplyModal}>
+          <Button variant='ghost' size='sm' className='text-xs px-1.5 py-0 h-5' onClick={() => handleOpenReplyModal(post)}>
             <MessageCircle />
           </Button>
         </div>
-
-        <ReplyModal isOpen={isReplyModalOpen} onOpenChange={setIsReplyModalOpen} post={post} />
-        <LoginAlertModal
-          isOpen={showLoginAlert}
-          onOpenChange={setShowLoginAlert}
-          description={`You're not logged in! Log in to create and post your comments`}
-        />
       </div>
 
       {post.comments.length > 0 && (
         <div className='mt-0.5'>
           {post.comments.map((comment) => (
-            <PostItem key={comment.id} post={comment} level={level + 1} />
+            <PostItem
+              key={comment.id}
+              post={comment}
+              level={level + 1}
+              handleOpenReplyModal={handleOpenReplyModal}
+              showLoginAlert={showLoginAlert}
+              setShowLoginAlert={setShowLoginAlert}
+              openedPost={openedPost}
+            />
           ))}
         </div>
       )}

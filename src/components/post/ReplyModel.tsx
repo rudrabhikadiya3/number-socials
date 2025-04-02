@@ -6,9 +6,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Post } from '@/types'
 import { MouseEvent, useState } from 'react'
 import { Loader2, Send } from 'lucide-react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { postService } from '@/services/postService'
+import { createCommentAPI } from '@/lib/actions'
 
 interface ReplyModalProps {
   isOpen: boolean
@@ -19,7 +19,6 @@ interface ReplyModalProps {
 export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalProps) {
   const [operator, setOperator] = useState('+')
   const [number, setNumber] = useState('')
-  const queryClient = useQueryClient()
 
   const calculateResult = (baseNumber: number, operand: number, operator: string) => {
     switch (operator) {
@@ -38,14 +37,11 @@ export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalPro
   }
 
   const createCommentMutation = useMutation({
-    mutationFn: (data: { postId: string; parentId: string; number: number }) => {
-      return postService.createComment(data)
-    },
+    mutationFn: createCommentAPI,
     onSuccess: () => {
       onOpenChange(false)
       setNumber('')
       setOperator('+')
-      queryClient.invalidateQueries({ queryKey: ['posts'] })
       toast.success('Your comment has been posted.')
     },
     onError: (error) => {
@@ -56,6 +52,7 @@ export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalPro
 
   const handleSubmit = (e: MouseEvent) => {
     e.preventDefault()
+
     if (!number || isNaN(Number(number))) {
       toast.error('Invalid input')
       return
@@ -66,7 +63,6 @@ export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalPro
       toast.error('Cannot divide by zero')
       return
     }
-    console.log('runinhhhhh')
 
     try {
       const result = calculateResult(post.number, numericOperand, operator)
@@ -77,7 +73,7 @@ export default function ReplyModal({ isOpen, onOpenChange, post }: ReplyModalPro
       })
     } catch (error: any) {
       console.error(error)
-      toast('Calculation error')
+      toast.error('Calculation error')
     }
   }
 
