@@ -4,6 +4,7 @@ import { MessageCircle } from 'lucide-react'
 import { Post } from '@/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { getRelativeTime } from '@/utils/client'
 
 interface PostItemProps {
   post: Post
@@ -11,11 +12,11 @@ interface PostItemProps {
 
   showLoginAlert: boolean
   setShowLoginAlert: React.Dispatch<React.SetStateAction<boolean>>
-  openedPost: Post | null
+  openedReply: Post | null
   handleOpenReplyModal: (value: Post | null) => void
 }
 
-export default function PostItem({ post, level, showLoginAlert, setShowLoginAlert, openedPost, handleOpenReplyModal }: PostItemProps) {
+export default function PostItem({ post, level, showLoginAlert, setShowLoginAlert, openedReply, handleOpenReplyModal }: PostItemProps) {
   const isMainPost = level === 0
 
   return (
@@ -28,7 +29,7 @@ export default function PostItem({ post, level, showLoginAlert, setShowLoginAler
           </Avatar>
           <div className='flex items-baseline'>
             <div className={`${isMainPost ? 'text-sm font-medium' : 'text-xs'}`}>{post.username}</div>
-            <div className='text-xs text-gray-500 ml-1.5'>{post.timestamp}</div>
+            <div className='text-xs text-gray-500 ml-1.5'>{getRelativeTime(Number(post.timestamp))}</div>
           </div>
         </div>
 
@@ -51,7 +52,7 @@ export default function PostItem({ post, level, showLoginAlert, setShowLoginAler
               handleOpenReplyModal={handleOpenReplyModal}
               showLoginAlert={showLoginAlert}
               setShowLoginAlert={setShowLoginAlert}
-              openedPost={openedPost}
+              openedReply={openedReply}
             />
           ))}
         </div>

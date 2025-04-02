@@ -12,7 +12,7 @@ interface PostListProps {
 }
 
 export default function PostList({ posts }: PostListProps) {
-  const [openedPost, setOpendedPost] = useState<Post | null>(null)
+  const [openedReply, setOpendedPost] = useState<Post | null>(null)
   const [showLoginAlert, setShowLoginAlert] = useState(false)
 
   const { user } = useAuth()
@@ -31,12 +31,12 @@ export default function PostList({ posts }: PostListProps) {
           level={0}
           showLoginAlert={showLoginAlert}
           setShowLoginAlert={setShowLoginAlert}
-          openedPost={openedPost}
+          openedReply={openedReply}
           handleOpenReplyModal={handleOpenReplyModal}
         />
       ))}
 
-      {openedPost && <ReplyModal isOpen={!!openedPost} onOpenChange={() => handleOpenReplyModal(null)} post={openedPost} />}
+      {openedReply && <ReplyModal isOpen={!!openedReply} onOpenChange={() => handleOpenReplyModal(null)} post={openedReply} />}
       <LoginAlertModal
         isOpen={showLoginAlert}
         onOpenChange={setShowLoginAlert}
